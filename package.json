@@ -9,6 +9,9 @@
     "test": "hardhat test",
     "node": "hardhat node"
   },
+	"dependencies": {
+    "erc-20-multichain-supply-extension": "github:GoFungible/erc-20-multichain-supply-extension#v1.0.0"
+  },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.0",
