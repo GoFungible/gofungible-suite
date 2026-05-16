@@ -2,12 +2,13 @@
 pragma solidity >=0.8.30;
 
 import "./INodeToken.sol";
-//import { IERC20x.sol } from "erc-20-multichain-supply-extension";
+import "erc-20-multichain-supply-extension/contracts/IERC20x.sol";
+import "./IERC20.sol";
 import "../extensions/IEntryFacet.sol";
 import "../../network/extensions/relayer/IRelayer.sol";
 import "../storage/LibDiamondStorage.sol";
 
-contract NodeToken is /*IERC20, IERC20x, */ INodeToken {
+contract NodeToken is IERC20, IERC20x, INodeToken {
 
 		// ************************************************************************************************
 		// ******************************************** Contract ******************************************
@@ -51,8 +52,8 @@ contract NodeToken is /*IERC20, IERC20x, */ INodeToken {
     mapping(address => mapping(address => uint256)) private _allowances;
 
     // Events
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    //event Transfer(address indexed from, address indexed to, uint256 value);
+    //event Approval(address indexed owner, address indexed spender, uint256 value);
         
     // ERC-20 Functions
     function name() public view returns (string memory) {
@@ -148,7 +149,7 @@ contract NodeToken is /*IERC20, IERC20x, */ INodeToken {
 
 
 		// ************************************************************************************************
-		// *************************************** Multichain ERC-20 **************************************
+		// *************************************** ERC-20X ************************************************
 		// ************************************************************************************************   
     uint256[] public knownChains;
 
@@ -160,7 +161,7 @@ contract NodeToken is /*IERC20, IERC20x, */ INodeToken {
 
     event LocalSupplyUpdated(uint256 indexed chainId, uint256 newSupply);
 
-		function getGlobalSupply() external view returns (uint256) {
+		function globalSupply() external view returns (uint256) {
         uint256 total = 0;
         for (uint i = 0; i < knownChains.length; i++) {
             total += supplies[knownChains[i]];
@@ -177,27 +178,37 @@ contract NodeToken is /*IERC20, IERC20x, */ INodeToken {
         }
     }
 
+		function balanceOfX(address _account) external view returns (uint256) {
+			return _balances[_account] ;
+		}
+
     // Performs supply transfer
-    function transferCrosschain(uint256 destChain, address destAddress, uint256 amount) internal {
+    function transferX(uint256 toChain, address toAddress, uint256 amount) external returns (bool) {
 
 			// do supply transation
-			_transferCrosschainTransaction(destChain, destAddress, amount);
+			_transferCrosschainTransaction(toChain, toAddress, amount);
 
 			// update local ERC-20
 			_burn(msg.sender, amount);
 
 			// update supplies
 			supplies[CHAIN_ID] += amount;
-			supplies[destChain] -= amount;
+			supplies[toChain] -= amount;
 
 			// sync both supplies on all other networks
 			for (uint i = 0; i < knownChains.length; i++) {
-				_sendSyncNodesTransaction(CHAIN_ID, destChain, amount);
+				_sendSyncNodesTransaction(CHAIN_ID, toChain, amount);
 			}
 
 			// emit event
 
+			return true;
+
     }
+
+		/*function transferXFrom(address from, uint256 toChain, address toAddress, uint256 amount) external returns (bool) {
+			return true;
+		}*/
 
     // Receives supply transfer
     function receiveCrosschain(uint256 sourceChain, uint256 destChain, uint256 amount) internal {
