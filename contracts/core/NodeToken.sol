@@ -2,10 +2,10 @@
 pragma solidity >=0.8.30;
 
 import "./IERC20.sol";
-import "erc-20-multichain-supply-extension/contracts/IERC20x.sol";
+import "gofungible-erc-20-multichain-supply-extension/contracts/IERC20x.sol";
+import "gofungible-erc-20-multichain-relayer-extension/contracts/IRelayer.sol";
 import "./INodeToken.sol";
 import "../extensions/IEntryFacet.sol";
-import "../../network/extensions/relayer/IRelayer.sol";
 import "../storage/LibDiamondStorage.sol";
 
 contract NodeToken is IERC20, IERC20x, INodeToken {
