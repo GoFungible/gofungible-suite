@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.30;
 
-import "./INodeToken.sol";
-import "erc-20-multichain-supply-extension/contracts/IERC20x.sol";
 import "./IERC20.sol";
+import "erc-20-multichain-supply-extension/contracts/IERC20x.sol";
+import "./INodeToken.sol";
 import "../extensions/IEntryFacet.sol";
 import "../../network/extensions/relayer/IRelayer.sol";
 import "../storage/LibDiamondStorage.sol";
@@ -145,9 +145,6 @@ contract NodeToken is IERC20, IERC20x, INodeToken {
         _approve(owner_, spender, currentAllowance - amount);
     }
 
-
-
-
 		// ************************************************************************************************
 		// *************************************** ERC-20X ************************************************
 		// ************************************************************************************************   
@@ -232,8 +229,6 @@ contract NodeToken is IERC20, IERC20x, INodeToken {
 			// emit event
 
     }
-
-
 
 		// ************************************************************************************************
 		// ******************************************* Transaction ****************************************
